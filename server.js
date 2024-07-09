@@ -7,7 +7,7 @@ const cors = require('cors');
 
 // CORS configuration
 const corsOptions = {
-  origin: ['http://localhost:3000', 'https://animated-froyo-e199ee.netlify.app'],
+  origin: ['http://localhost:5173', 'https://animated-froyo-e199ee.netlify.app'],
   methods: ['GET', 'POST'],
 };
 app.use(cors(corsOptions));
