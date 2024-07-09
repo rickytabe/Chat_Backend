@@ -5,27 +5,35 @@ const mongoose = require('mongoose');
 const socketIo = require('socket.io');
 const cors = require('cors');
 
+
 const app = express();
 const server = http.createServer(app);
-const io = socketIo(server);
+const io = socketIo(server, {
+  cors: {
+    origin: 'https://animated-froyo-e199ee.netlify.app', // Update with your Vite frontend URL
+    methods: ['GET', 'POST'],
+  },
+});
 
 const PORT = process.env.PORT || 5000;
 
+//enable cors
+app.use(cors());
+
 // MongoDB connection
-const dbURL = process.env.MONGODB_URL;
+const dbURl = process.env.MONGODB_URL;
 
 console.log('Starting server...');
-mongoose.connect(dbURL, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-}).then(() => {
-  console.log('MongoDB connected...');
-}).catch((err) => {
-  console.error('Error connecting to MongoDB:', err);
-});
+mongoose.connect(dbURl, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  }).then(() => {
+    console.log('MongoDB connected...');
+  }).catch((err) => {
+    console.error('Error connecting to MongoDB:', err);
+  });
 
-// Define MongoDB schema and model
-const chatSchema = new mongoose.Schema({
+ chatSchema = new mongoose.Schema({
   user: String,
   message: String,
   timestamp: { type: Date, default: Date.now },
@@ -33,40 +41,28 @@ const chatSchema = new mongoose.Schema({
 
 const Chat = mongoose.model('Chat', chatSchema);
 
-// Socket.IO handling
 io.on('connection', (socket) => {
   console.log('New client connected');
 
-  // Emit all chat messages to the new client on connection
+  // Emit all chat messages to the new client
   Chat.find().then((chats) => {
     socket.emit('init', chats);
   });
 
-  // Listen for new chat messages
   socket.on('chatMessage', (msg) => {
     const chat = new Chat(msg);
     chat.save().then(() => {
-      io.emit('chatMessage', msg); // Broadcast message to all clients
+      io.emit('chatMessage', msg);
     });
   });
 
-  // Handle client disconnection
   socket.on('disconnect', () => {
     console.log('Client disconnected');
   });
 });
 
-// CORS configuration
-const corsOptions = {
-  origin: ['http://localhost:3000', 'https://animated-froyo-e199ee.netlify.app'],
-  methods: ['GET', 'POST'],
-};
-app.use(cors(corsOptions));
-
-// Basic route to check server status
 app.get('/', (req, res) => {
   res.send('Server is running');
 });
 
-// Start the server
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
