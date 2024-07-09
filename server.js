@@ -9,7 +9,7 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
-    origin: 'http://localhost:5173', // Update with your Vite frontend URL
+    origin: 'http://localhost:5173/Chat_Frontend', // Update with your Vite frontend URL
     methods: ['GET', 'POST'],
   },
 });
