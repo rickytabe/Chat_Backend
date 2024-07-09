@@ -5,19 +5,20 @@ const mongoose = require('mongoose');
 const socketIo = require('socket.io');
 const cors = require('cors');
 
+// CORS configuration
+const corsOptions = {
+  origin: ['http://localhost:3000', 'https://animated-froyo-e199ee.netlify.app'],
+  methods: ['GET', 'POST'],
+};
+app.use(cors(corsOptions));
+
+
 const app = express();
 const server = http.createServer(app);
-const io = socketIo(server, {
-  cors: {
-    origin: 'https://animated-froyo-e199ee.netlify.app', // Update with your Vite frontend URL
-    methods: ['GET', 'POST'],
-  },
-});
+const io = socketIo();
 
 const PORT = process.env.PORT || 5000;
 
-//enable cors
-app.use(cors());
 
 // MongoDB connection
 const dbURl = process.env.MONGODB_URL;
