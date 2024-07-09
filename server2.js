@@ -16,7 +16,7 @@ const io = socketIo(server, {
 
 const PORT = process.env.PORT || 5000;
 
-//enable cors
+// Enable CORS
 app.use(cors());
 
 // MongoDB connection
@@ -32,7 +32,7 @@ mongoose.connect(dbURl, {
     console.error('Error connecting to MongoDB:', err);
   });
 
- chatSchema = new mongoose.Schema({
+const chatSchema = new mongoose.Schema({
   user: String,
   message: String,
   timestamp: { type: Date, default: Date.now },
