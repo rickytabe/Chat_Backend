@@ -22,6 +22,7 @@ app.use(cors());
 // MongoDB connection
 const dbURl = process.env.MONGODB_URL;
 
+console.log('Starting server...');
 mongoose.connect(dbURl, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -30,6 +31,8 @@ mongoose.connect(dbURl, {
   }).catch((err) => {
     console.error('Error connecting to MongoDB:', err);
   });
+server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
  chatSchema = new mongoose.Schema({
   user: String,
   message: String,
